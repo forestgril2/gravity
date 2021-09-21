@@ -23,28 +23,29 @@ Window {
         property var startTime: new Date();
         property var lastTime
 
-        property double xSpeed: 0.2
+        property double xSpeed:  0.2
         property double ySpeed: -0.3
 
         property double xStart: 0
         property double yStart: 960
 
         property double yPrev: 960
-        property double xPrev: 960
+        property double xPrev: 0
 
         property double yAcceleration: 0.001
-
 
         onPaint: {
             var ctx = getContext("2d");
             ctx.strokeStyle = Qt.rgba(0, 0, 0, 1);
-            ctx.lineWidth = 3;
 
             var diffTime = new Date() - startTime
 
 //            ySpeed = ySpeed  - yAcceleration*diffTime
 
             ySpeed = ySpeed + yAcceleration
+
+            ctx.reset()
+            ctx.lineWidth = 5;
 
             ctx.beginPath();
             ctx.moveTo(xPrev, yPrev);//start point
