@@ -9,6 +9,7 @@ Window {
     title: qsTr("Hello World")
 
     Timer {
+        id: timer
         interval: 17
         running: true
         repeat: true
@@ -17,46 +18,42 @@ Window {
         }
     }
 
+    Bullet {
+        id: leftBullet
+    }
+
     Canvas {
         id: myCanvas
         anchors.fill: parent
-        property var startTime: new Date();
-        property var lastTime
+        property var prevTime: new Date()
 
-        property double xSpeed:  0.2
-        property double ySpeed: -0.3
+        property bool isInitialized: false
 
-        property double xStart: 0
-        property double yStart: 960
-
-        property double yPrev: 960
-        property double xPrev: 0
-
-        property double yAcceleration: 0.001
+        property double yAcceleration: 0.002
 
         onPaint: {
             var ctx = getContext("2d");
             ctx.strokeStyle = Qt.rgba(0, 0, 0, 1);
 
-            var diffTime = new Date() - startTime
-
-//            ySpeed = ySpeed  - yAcceleration*diffTime
-
-            ySpeed = ySpeed + yAcceleration
+            var currentTime = new Date()
+            var diffTime = currentTime - prevTime
+//            console.log(" ### diffTime: ", diffTime)
+            prevTime = currentTime
 
             ctx.reset()
             ctx.lineWidth = 5;
-
             ctx.beginPath();
-            ctx.moveTo(xPrev, yPrev);//start point
 
-            var xNew = xStart + diffTime*xSpeed
-            var yNew = yStart + diffTime*ySpeed
+            leftBullet.v.y = leftBullet.v.y + yAcceleration
+            ctx.moveTo(leftBullet.pos.x, leftBullet.pos.y); //line start point
 
-            ctx.lineTo(xNew, yNew);//end point
+            var xNew = leftBullet.pos.x + (diffTime * leftBullet.v.x)
+            var yNew = leftBullet.pos.y + (diffTime * leftBullet.v.y)
 
-            xPrev = xNew
-            yPrev = yNew
+            ctx.lineTo(xNew, yNew); // line end point
+
+            leftBullet.pos.x = xNew
+            leftBullet.pos.y = yNew
 
             ctx.stroke();
         }
